@@ -1,112 +1,55 @@
 #include<bits/stdc++.h>
 using namespace std;
-char space[3][3]={{'1','2','3'},{'4','5','6'},{'7','8','9'}};
-bool t ; // t-> tie
-char token='X';
-string n1;
-string n2;
-int row,col;
-int c=0;
-void f1(){
-    cout<<"   |   |   "<<endl;
-    cout<<" "<<space[0][0]<<" "<<"|"<<" "<<space[0][1]<<" "<<"|"<<" "<<space[0][2]<<" "<<endl;
-    cout<<"___|___|___"<<endl;
-    cout<<"   |   |   "<<endl;
-    cout<<" "<<space[1][0]<<" "<<"|"<<" "<<space[1][1]<<" "<<"|"<<" "<<space[1][2]<<" "<<endl;
-    cout<<"___|___|___"<<endl;
-    cout<<"   |   |   "<<endl;
-    cout<<" "<<space[2][0]<<" "<<"|"<<" "<<space[2][1]<<" "<<"|"<<" "<<space[2][2]<<" "<<endl;
-    cout<<"   |   |   "<<endl;
+
+vector<vector<char>>board;
+void drawboard(){
+  for(int i=0; i<3; i++){
+    cout<<"|";
+    for(int j=0; j<3; j++){
+      cout<<board[i][j];
+      cout<<" |";
+    }cout<<endl;
+    cout<<"-------------"<<endl;
+  }
 }
-void f2(){
-    int dizit;
-    if(token=='X'){
-        cout<<n1<<" enter dizit"<<endl;
-        cin>>dizit;
-        token='0';
-    }
-    else if(token=='0'){
-        cout<<n2<<" enter dizit"<<endl;
-        cin>>dizit;
-        token='X';
-    }
-    if(dizit==1){
-        row=0;col=0;
-    }
-    else if(dizit==2){
-        row=0;col=1;
-    }
-    else if(dizit==3){
-        row=0;col=2;
-    }
-    else if(dizit==4){
-        row=1;col=0;
-    }
-    else if(dizit==5){
-        row=1;col=1;
-    }
-    else if(dizit==6){
-        row=1;col=2;
-    }
-    else if(dizit==7){
-        row=2;col=0;
-    }
-    else if(dizit==8){
-        row=2;col=1;
-    }
-    else if(dizit==9){
-        row=2;col=2;
-    }
-    else if(dizit<1 or dizit>9)cout<<"invalid!!!"<<endl;
-
-
-    if(token=='X' and space[row][col]!='X' and space[row][col]!='0'){
-        space[row][col]='X';
-    }
-    else if(token=='0' and space[row][col]!='X' and space[row][col]!='0'){
-        space[row][col]='0';
-    }
-    else {
-        cout<<" u are putting your choice over other choice , try at another place"<<endl;
-        f2();
-    }
-    f1();//display your upgrades in grid
+bool checkwin(char player){
+  for(int i=0; i<3; i++){
+    if(board[i][0]==player and board[i][1]==player and board[i][2]==player )return true;
+  }for(int j=0; j<3; j++){
+    if(board[0][j]==player and board[1][j]==player and board[2][j]==player)return true;
+  }
+  if(board[0][0]==player and board[1][1]==player and board[2][2]==player  or board[0][2]==player and board[1][1]==player and board[2][0]==player)return true;
+  else false;
 }
 
-bool f3(){
-    for(int i=0; i<3; i++){
-        if(space[0][i]==space[1][i] and space[0][i]==space[2][i] or space[i][0]==space[i][1]and space[i][0]== space[i][2])return true;
-    }
-    // diagonal check
-    if(space[0][0]==space[1][1] and space[0][0]== space[2][2] or space[0][3] == space[1][1] and space[0][2]== space[2][0])return true;
-    for(int i=0; i<3; i++){
-        for(int j=0; j<3; j++){
-            if(space[i][j]!='X' and space[i][j]!='0'){
-    
-                return false;
-            }
-        }
-    }
-    t=true;
-    
-    return false ;
-}
 int main(){
-    cout<<"enter name of player 1"<<endl;
-    cin>>n1;
-    cout<<"enter name of player 2"<<endl;
-    cin>>n2;
-    while(!f3()){
-        f1();
-        f2();
-        f3();
+  board.resize(3,vector<char>(3,' '));
+  char player = 'X';
+  int turn;
+
+  for(turn=0; turn<9; turn++){
+    drawboard();
+    int row,col;
+    while(1){
+      cout<<"enter row"<<endl;
+      cin>>row;
+      cout<<"enter col"<<endl;
+      cin>>col;
+      if(row>2 or row <0 or col>2 or col<0 or board[row][col] !=' '){
+        cout<<"enter valid row and col"<<endl;
+      }
+      else break;
     }
-    if(token=='X' and t==false){
-        cout<<n2<<"wins"<<endl;
+    board[row][col]=player;
+    if(checkwin(player)){
+      cout<<player<<" wins"<<endl;
+      break;
     }
-    else if(token=='0' and t==false){
-        cout<<n1<<"wins"<<endl;
-    }
-    else cout<<"draw"<<endl;
-    return 0;
+    player = (player=='X')?'0':'X';
+
+  }
+  if(turn ==9 and !checkwin('X') and !checkwin('0')){
+    cout<<"its draw"<<endl;
+  }
+  return 0;
 }
